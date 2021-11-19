@@ -63,64 +63,60 @@ int main(int argc, char *argv[])
     char *begin = &array[0];
     char *end = &array[30000];
 
-    char *input = NULL;
-    size_t inputSize = 0;
-    ssize_t read;
-    while ((read = getline(&input, &inputSize, inputFile)) != -1)
+    for (char c = getc(inputFile); c != EOF; c = getc(inputFile))
     {
-        for (size_t i = 0; i < read; i++)
+        if (c == '>' && ptr < end)
         {
-            if (input[i] == '>' && ptr < end)
+            ptr++;
+        }
+        else if (c == '>' && !(ptr < end))
+        {
+            break;
+        }
+        else if (c == '<' && begin < ptr)
+        {
+            ptr--;
+        }
+        else if (c == '<' && !(begin < ptr))
+        {
+            break;
+        }
+        else if (c == '+')
+        {
+            *ptr = *ptr + 1;
+        }
+        else if (c == '-')
+        {
+            *ptr = *ptr - 1;
+        }
+        else if (c == '.')
+        {
+            fprintf(outputFile, "%c", ptr[0]);
+        }
+        else if (c == ',')
+        {
+            *ptr = getchar();
+        }
+        else if (c == '[' && ptr[0] == 0)
+        {
+            while (c != ']' && c != EOF)
             {
-                ptr++;
+                c = getc(inputFile);
             }
-            else if (input[i] == '<' && begin < ptr)
+        }
+        else if (c == ']')
+        {
+            while (fseek(inputFile, -1, SEEK_CUR) == 0 && getc(inputFile) != '[')
             {
-                ptr--;
+                fseek(inputFile, -1, SEEK_CUR);
             }
-            else if (input[i] == '+')
+            if (fseek(inputFile, -1, SEEK_CUR) != 0)
             {
-                *ptr = *ptr + 1;
+                break;
             }
-            else if (input[i] == '-')
-            {
-                *ptr = *ptr - 1;
-            }
-            else if (input[i] == '.')
-            {
-                fprintf(outputFile, "%c", ptr[0]);
-            }
-            else if (input[i] == ',')
-            {
-                *ptr = getchar();
-            }
-            else if (input[i] == '[' && ptr[0] == 0)
-            {
-                while (input[i] != ']')
-                {
-                    if (i < read + 1)
-                    {
-                        i++;
-                    }
-                }
-            }
-            else if (input[i] == ']')
-            {
-                while (input[i] != '[')
-                {
-                    if (0 < i)
-                    {
-                        i--;
-                    }
-                    
-                }
-                i--; 
-            }
-            
         }
     }
 
-    free(input);
     fclose(outputFile);
     fclose(inputFile);
 
