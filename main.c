@@ -112,6 +112,7 @@ int main(int argc, char *argv[])
             }
             if (fseek(inputFile, -1, SEEK_CUR) != 0)
             {
+                fprintf(stderr, "%s Error ] without matching [\n", argv[0]);
                 break;
             }
         }
