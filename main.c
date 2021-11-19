@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     char array[30000] = {0};
     char *ptr = array;
     char *begin = &array[0];
-    char *end = &array[30000];
+    char *end = &array[30000] - 1;
 
     for (char c = getc(inputFile); c != EOF; c = getc(inputFile))
     {
@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
         }
         else if (c == '>' && !(ptr < end))
         {
+            fprintf(stderr, "%s Error can't move more to the right\n", argv[0]);
             break;
         }
         else if (c == '<' && begin < ptr)
@@ -79,6 +80,7 @@ int main(int argc, char *argv[])
         }
         else if (c == '<' && !(begin < ptr))
         {
+            fprintf(stderr, "%s Error can't move more to the left\n", argv[0]);
             break;
         }
         else if (c == '+')
